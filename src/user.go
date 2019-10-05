@@ -15,6 +15,7 @@ type User struct {
 }
 type users []User
 
+//slice of users.
 var userlist users
 
 //get all users
