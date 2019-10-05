@@ -16,6 +16,7 @@ var events = allEvents{
 		Description: "test",
 		Type:        "test type",
 		Priority:    "urgent",
+		UsersName:   "Admin",
 	},
 }
 

@@ -17,6 +17,7 @@ type (
 		Description string `json:"Description"`
 		Type        string `json:"Type"`
 		Priority    string `json:"Priority"`
+		UsersName   string `json:"Usersname"`
 	}
 	allEvents []event
 )
