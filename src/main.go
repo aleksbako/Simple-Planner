@@ -41,9 +41,7 @@ func homelink(w http.ResponseWriter, r *http.Request) {
 func main() {
 	fmt.Scan(&password)
 	//DBConnecting()
-	insertUser(password)
-	getUser(password)
-	DeleteUser(password)
+	AddEvent(password)
 	routing()
 }
 
