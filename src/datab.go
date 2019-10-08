@@ -119,9 +119,52 @@ func RemoveEvent(password string) {
 	db.Close()
 }
 
-//EDIT EVENT Function
+//EditEvent Function to update the events in the database.
+func EditEvent(password string) {
+	var psqlInfo = fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+	db, err := sql.Open("postgres", psqlInfo)
+	if err != nil {
+		panic(err)
+	}
+	sqlStatement := `
+UPDATE events
+SET title = $1
+WHERE id = $2`
+	_, err = db.Exec(sqlStatement, "Yay", "1")
+	if err != nil {
+		panic(err)
+	}
+	db.Close()
+}
 
-//Fetch Event Information Funciton.
+//FetchEvent Information Funciton.
+func FetchEvent(password string) {
+
+	var psqlInfo = fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+	db, err := sql.Open("postgres", psqlInfo)
+	if err != nil {
+		panic(err)
+	}
+	sqlStatement := `SELECT description,title, priority FROM events WHERE id=$1`
+	row := db.QueryRow(sqlStatement, "1")
+	var desc string
+	var title string
+	var priority string
+
+	switch err := row.Scan(&desc, &title, &priority); err {
+	case sql.ErrNoRows:
+		fmt.Println("No rows were returned!")
+	case nil:
+		fmt.Println(desc, title, priority)
+	default:
+		panic(err)
+	}
+	db.Close()
+}
 
 /*
 <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<TYPE DATABASE FUNCTIONS>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
