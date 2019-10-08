@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	_ "database/sql"
 	"fmt"
+	"time"
 
 	_ "github.com/lib/pq"
 )
@@ -21,9 +22,9 @@ func insertUser(password string) {
 		panic(err)
 	}
 	sqlStatement := `
-	INSERT INTO users (username, password, uname)
+	INSERT INTO users (username, password, name)
 	VALUES ($1, $2, $3)`
-	_, err = db.Exec(sqlStatement, "{lazy}", "{help}", "{Aleks}")
+	_, err = db.Exec(sqlStatement, "lazy", "help", "Aleks")
 	if err != nil {
 		panic(err)
 	}
@@ -40,8 +41,8 @@ func getUser(password string) {
 	if err != nil {
 		panic(err)
 	}
-	sqlStatement := `SELECT password,uname FROM Users WHERE Username=$1`
-	row := db.QueryRow(sqlStatement, "{lazy}")
+	sqlStatement := `SELECT password,name FROM Users WHERE Username=$1`
+	row := db.QueryRow(sqlStatement, "lazy")
 	var pass string
 	var name string
 
@@ -68,7 +69,7 @@ func DeleteUser(password string) {
 	sqlStatement := `
 	DELETE FROM users
 	WHERE username = $1;`
-	_, err = db.Exec(sqlStatement, "{lazy}")
+	_, err = db.Exec(sqlStatement, "lazy")
 	if err != nil {
 		panic(err)
 	}
@@ -88,18 +89,78 @@ func AddEvent(password string) {
 	if err != nil {
 		panic(err)
 	}
+	time := time.Now()
 	sqlStatement := `
 	INSERT INTO events (id, date, type_id, username, description, title, priority)
-	VALUES ($1, $2, $3, $4, $5, $6, $7)`
-	_, err = db.Exec(sqlStatement, "1", "24.04.1998", "2", "{lazy}", "{I was born}", "{Birthday}", "urgent")
+	VALUES ($1, $2, (SELECT id FROM type WHERE id = 2), (SELECT username FROM users WHERE username='lazy'), $3, $4, $5)`
+	_, err = db.Exec(sqlStatement, "1", time, "I was born", "Birthday", "urgent")
 	if err != nil {
 		panic(err)
 	}
 	db.Close()
 }
 
-//Remove EVENT Function
+//RemoveEvent Function removes the event from the planner.
+func RemoveEvent(password string) {
+	var psqlInfo = fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+	db, err := sql.Open("postgres", psqlInfo)
+	if err != nil {
+		panic(err)
+	}
+	sqlStatement := `
+	DELETE FROM events
+	WHERE id = $1;`
+	_, err = db.Exec(sqlStatement, "1")
+	if err != nil {
+		panic(err)
+	}
+	db.Close()
+}
 
 //EDIT EVENT Function
 
 //Fetch Event Information Funciton.
+
+/*
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<TYPE DATABASE FUNCTIONS>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+*/
+
+//AddType of event
+func AddType(password string) {
+	var psqlInfo = fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+	db, err := sql.Open("postgres", psqlInfo)
+	if err != nil {
+		panic(err)
+	}
+	sqlStatement := `
+	INSERT INTO type (id, name)
+	VALUES ($1, $2)`
+	_, err = db.Exec(sqlStatement, "2", "lazy")
+	if err != nil {
+		panic(err)
+	}
+	db.Close()
+}
+
+//DeleteType function deletes the type of event from the database.
+func DeleteType(password string) {
+	var psqlInfo = fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+	db, err := sql.Open("postgres", psqlInfo)
+	if err != nil {
+		panic(err)
+	}
+	sqlStatement := `
+	DELETE FROM type
+	WHERE id = $1;`
+	_, err = db.Exec(sqlStatement, "2")
+	if err != nil {
+		panic(err)
+	}
+	db.Close()
+}
