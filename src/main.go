@@ -40,7 +40,10 @@ func homelink(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	fmt.Scan(&password)
-	DBConnecting()
+	//DBConnecting()
+	insertUser(password)
+	getUser(password)
+	DeleteUser(password)
 	routing()
 }
 
