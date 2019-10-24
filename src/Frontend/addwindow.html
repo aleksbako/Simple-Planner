@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Add Event</title>
+  </head>
+  <body>
+    <form>
+        <ul></ul>
+        <input type ="button" onclick ="location.href='AddEvent.html';" value = "Add Event"/>
+    </form>
+    <script>
+    const electron = require('electron');
+    const {ipcRenderer} = electron;
+
+    const form = document.querySelector('form')
+    form.addEventListener('add_event', getevent);
+     
+   
+      function getevent(e){
+    
+        e.preventDefault();
+       // const item = document.querySelector('#item').value;
+       ipcRenderer.send('item:add')  ;
+      
+     }
+    </script>
+  </body>
+</html>

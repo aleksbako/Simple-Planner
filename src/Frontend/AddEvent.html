@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Add Event Info</title>
+  </head>
+  <body>
+    <form>
+            <div>
+                    <label> Enter ID</label>
+                    <input type="text" id ="item" autofocus>
+                </div>
+        <div>
+            <label> Enter Title</label>
+            <input type="text" id ="item" autofocus>
+        </div>
+        <div>
+            <label> Enter Description</label>
+            <input type="text" id ="item" autofocus>
+        </div>
+        <div>
+            <label> Enter Type</label>
+            <input type="text" id ="item" autofocus>
+        </div>
+        <div>
+            <label> Enter Priority</label>
+            <input type="text" id ="item" autofocus>
+        </div>
+        <div>
+            <label> Enter UsersName</label>
+            <input type="text" id ="item" autofocus>
+        </div>
+        <button type ="submit"> Add Event </button>
+    </form>
+    <script>
+    const electron = require('electron');
+    const {ipcRenderer} = electron;
+
+    const form = document.querySelector('form')
+    form.addEventListener('submit', submitForm);
+
+    function submitForm(e){
+    
+      e.preventDefault();
+      const item = document.querySelector('#item').value;
+      ipcRenderer.send('item:add',item)  
+      
+    }
+    </script>
+  </body>
+</html>

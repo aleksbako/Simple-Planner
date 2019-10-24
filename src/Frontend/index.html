@@ -2,15 +2,35 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Simple Planner!</title>
   </head>
   <body>
-    <h1>Hello World!</h1>
-    We are using Node.js <span id="node-version"></span>,
-    Chromium <span id="chrome-version"></span>,
-    and Electron <span id="electron-version"></span>.
-
+    <h1>Simple Planner for 2019</h1>
+    <ul1 class="weekdays">
+      <li>Mo</li>
+      <li>Tu</li>
+      <li>We</li>
+      <li>Th</li>
+      <li>Fr</li>
+      <li>Sa</li>
+      <li>Su</li>
+    </ul1>
+    
+    <ul></ul>
     <!-- You can also require other files to run in this process -->
-    <script src="./renderer.js"></script>
+  <script>
+  const electron = require('electron');
+  const {ipcRenderer} = electron;
+  const ul = document.querySelector('ul');
+    //add item
+    // ipcRenderer.on('item:add',function(e,item){
+    //   console.log(item);
+    //   const li = document.createElement('li');
+    //   const itemText = document.createTextNode(item);
+    //   li.appendChild(itemText);
+    //   ul.appendChild(li);
+    // });
+  
+  </script>
   </body>
 </html>
