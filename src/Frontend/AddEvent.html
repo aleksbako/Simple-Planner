@@ -43,15 +43,15 @@
     function submitForm(e){
       e.preventDefault();
     var event = {
-          id : document.querySelector('#item1').value,
-          Title: document.querySelector('#item2').value,
-          Description: document.querySelector('#item3').value,
-          Type: document.querySelector('#item4').value,
-          Priority: document.querySelector('#item5').value,
-          UsersName: document.querySelector('#item6').value,
+          "id" : document.querySelector('#item1').value,
+          "Title": document.querySelector('#item2').value,
+          "Description": document.querySelector('#item3').value,
+          "Type": document.querySelector('#item4').value,
+          "Priority": document.querySelector('#item5').value,
+          "UserName": document.querySelector('#item6').value,
       }
-      var events = JSON.stringify(event);
-      ipcRenderer.send('event:add',events);
+      
+      ipcRenderer.send('event:add',event);
         
       
     }

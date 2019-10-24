@@ -1,7 +1,7 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow,Menu, ipcMain,net} = require('electron');
 const path = require('path');
-
+const axios = require('axios').default;
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -92,6 +92,12 @@ ipcMain.on('event:add', function(e,item){
   console.log(item);
   addwindow.loadFile('addwindow.html');
   addwindow.webContents.send('event:add', item);
+  axios.post('http://localhost:8080/event',item)
+  .then(function(response){
+    console.log(response.status);
+  }).catch(function(err){
+    console.log(err);
+  })
   //addwindow.close(); 
 });
 
@@ -110,20 +116,34 @@ const mainMenuTemplate = [
       {
         label : 'Refresh',
         click(){
-          const request = net.request('http://localhost:8080/events')
-          request.on('response', (response) => {
-            response.on('data', (chunk) => {
-              //console.log(`BODY: ${chunk}`)
-              if(!list.includes(`${chunk}`)){
-              list.push(`${chunk}`);
-              mainWindow.webContents.send('item:add',`${chunk}`);
-              }
-
-            })
-          })
-          request.end()
+         axios.get('http://localhost:8080/events')
+         .then(function(response){
+            console.log(JSON.stringify(response.data));
+            mainWindow.webContents.send('item:add',JSON.stringify(response.data));
+         }).catch(function(err){
+           console.log(err);
+         })
+            // if(!list.includes(body)){
+            //        list.push(body);
+            // mainWindow.webContents.send('item:add',body);
+            // }
+            // console.log('body:',body);
+          }
           
-        }
+          // const request = net.request('http://localhost:8080/events')
+          // request.on('response', (response) => {
+          //   response.on('data', (chunk) => {
+          //     //console.log(`BODY: ${chunk}`)
+          //     if(!list.includes(`${chunk}`)){
+          //     list.push(`${chunk}`);
+            //   mainWindow.webContents.send('item:add',`${chunk}`);
+          //     }
+
+          //   })
+          // })
+          // request.end()
+          
+        
       },
       {
         label : 'Quit',
