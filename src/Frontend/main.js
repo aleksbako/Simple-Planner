@@ -98,7 +98,7 @@ ipcMain.on('event:add', function(e,item){
   }).catch(function(err){
     console.log(err);
   })
-  //addwindow.close(); 
+  addwindow.close(); 
 });
 
 //create menu template
@@ -118,30 +118,30 @@ const mainMenuTemplate = [
         click(){
          axios.get('http://localhost:8080/events')
          .then(function(response){
-            console.log(JSON.stringify(response.data));
-            mainWindow.webContents.send('item:add',JSON.stringify(response.data));
+           var r = JSON.stringify(response.data).split(",{");
+          for(var i = 0; i < r.length;i++){
+            var temp = "{"+r[i];
+            if(i == 0){
+              console.log("before slice first " + temp);
+             temp = r[i].substr(1);
+             console.log("after slice first " + temp);
+            }
+            else if(i==r.length-1){
+              console.log("before slice last " + temp);
+              temp = r[i].slice(0,r[i].length-1);
+              temp = "{"+temp;
+            }
+            if(!list.includes(temp)){
+              list.push(temp);
+              mainWindow.webContents.send('item:add',temp);
+            }
+          }
          }).catch(function(err){
            console.log(err);
          })
-            // if(!list.includes(body)){
-            //        list.push(body);
-            // mainWindow.webContents.send('item:add',body);
-            // }
-            // console.log('body:',body);
+           
           }
           
-          // const request = net.request('http://localhost:8080/events')
-          // request.on('response', (response) => {
-          //   response.on('data', (chunk) => {
-          //     //console.log(`BODY: ${chunk}`)
-          //     if(!list.includes(`${chunk}`)){
-          //     list.push(`${chunk}`);
-            //   mainWindow.webContents.send('item:add',`${chunk}`);
-          //     }
-
-          //   })
-          // })
-          // request.end()
           
         
       },

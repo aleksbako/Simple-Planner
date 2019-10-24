@@ -28,7 +28,7 @@
             <input type="text" id ="item5" autofocus>
         </div>
         <div>
-            <label> Enter UsersName</label>
+            <label> Enter UserName</label>
             <input type="text" id ="item6" autofocus>
         </div>
         <button type ="submit"> Add Event </button>
@@ -48,7 +48,7 @@
           "Description": document.querySelector('#item3').value,
           "Type": document.querySelector('#item4').value,
           "Priority": document.querySelector('#item5').value,
-          "UserName": document.querySelector('#item6').value,
+          "UserName": document.querySelector('#item6').value
       }
       
       ipcRenderer.send('event:add',event);
