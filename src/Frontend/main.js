@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow,Menu, ipcMain} = require('electron');
+const {app, BrowserWindow,Menu, ipcMain,net} = require('electron');
 const path = require('path');
 
 
@@ -7,6 +7,8 @@ const path = require('path');
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 let addwindow;
+var list = [];
+
 
 function createWindow () {
   // Create the browser window.
@@ -86,6 +88,13 @@ ipcMain.on('item:add', function(e){
   //addwindow.close(); 
 });
 
+ipcMain.on('event:add', function(e,item){
+  console.log(item);
+  addwindow.loadFile('addwindow.html');
+  addwindow.webContents.send('event:add', item);
+  //addwindow.close(); 
+});
+
 //create menu template
 
 const mainMenuTemplate = [
@@ -99,7 +108,22 @@ const mainMenuTemplate = [
         }
       },
       {
-        label : 'Remove Events'
+        label : 'Refresh',
+        click(){
+          const request = net.request('http://localhost:8080/events')
+          request.on('response', (response) => {
+            response.on('data', (chunk) => {
+              //console.log(`BODY: ${chunk}`)
+              if(!list.includes(`${chunk}`)){
+              list.push(`${chunk}`);
+              mainWindow.webContents.send('item:add',`${chunk}`);
+              }
+
+            })
+          })
+          request.end()
+          
+        }
       },
       {
         label : 'Quit',

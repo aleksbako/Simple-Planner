@@ -7,29 +7,31 @@
   <body>
     <h1>Simple Planner for 2019</h1>
     <ul1 class="weekdays">
-      <li>Mo</li>
-      <li>Tu</li>
-      <li>We</li>
-      <li>Th</li>
-      <li>Fr</li>
-      <li>Sa</li>
-      <li>Su</li>
+      <li>Monday</li>
+      <li>Tuesday</li>
+      <li>Wednesday</li>
+      <li>Thursday</li>
+      <li>Friday</li>
+      <li>Saturday</li>
+      <li>Sunday</li>
     </ul1>
     
     <ul></ul>
     <!-- You can also require other files to run in this process -->
   <script>
+    
   const electron = require('electron');
   const {ipcRenderer} = electron;
   const ul = document.querySelector('ul');
     //add item
-    // ipcRenderer.on('item:add',function(e,item){
-    //   console.log(item);
-    //   const li = document.createElement('li');
-    //   const itemText = document.createTextNode(item);
-    //   li.appendChild(itemText);
-    //   ul.appendChild(li);
-    // });
+     ipcRenderer.on('item:add',function(e,item){
+       
+       console.log(item);
+        const li = document.createElement('li');
+       const itemText = document.createTextNode(item);
+       li.appendChild(itemText);
+       ul.appendChild(li);
+     });
   
   </script>
   </body>
