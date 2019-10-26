@@ -16,7 +16,7 @@ type (
 		Date        string `json:"Date"`
 		Title       string `json:"Title"`
 		Description string `json:"Description"`
-		Type        int    `json:"Type"`
+		Type        string `json:"Type"`
 		Priority    string `json:"Priority"`
 		UserName    string `json:"Username"`
 	}
@@ -41,6 +41,7 @@ func createEvent(w http.ResponseWriter, r *http.Request) {
 
 //GET all events
 func getAllEvents(w http.ResponseWriter, r *http.Request) {
+
 	json.NewEncoder(w).Encode(events)
 }
 
@@ -79,12 +80,31 @@ func updateEvent(w http.ResponseWriter, r *http.Request) {
 
 //Remove event
 func deleteEvent(w http.ResponseWriter, r *http.Request) {
-	eventID := mux.Vars(r)["id"]
+	var eventID = mux.Vars(r)["id"]
+	check := true
 	for i, singleEvent := range events {
 		if strconv.Itoa(singleEvent.ID) == eventID {
-			RemoveEvent(password, singleEvent)
+			RemoveEvent(password, singleEvent.ID)
 			events = append(events[:i], events[i+1:]...)
+			check = false
 			fmt.Fprintf(w, "The event with id %v has been successfully removed", eventID)
 		}
+
+	}
+
+	if check == true {
+		temp, err := strconv.Atoi(eventID)
+		if err == nil {
+			ev := FetchEvent(password, temp)
+			//error because it doesn't return anything, fix by returning a event object
+			if ev.Title != "" {
+				RemoveEvent(password, temp)
+				fmt.Fprintf(w, "The event with id %v has been successfully removed", eventID)
+				check = false
+			}
+		}
+	}
+	if check == true {
+		fmt.Print("sorry this event doesn't exist")
 	}
 }
