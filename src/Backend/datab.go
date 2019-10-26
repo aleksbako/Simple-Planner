@@ -24,7 +24,7 @@ func insertUser(password string) {
 	sqlStatement := `
 	INSERT INTO users (username, password, name)
 	VALUES ($1, $2, $3)`
-	_, err = db.Exec(sqlStatement, "lazy", "help", "Aleks")
+	_, err = db.Exec(sqlStatement, "SpiffyRaccoon", "test", "Aleks")
 	if err != nil {
 		panic(err)
 	}
@@ -81,7 +81,7 @@ func DeleteUser(password string) {
 */
 
 //AddEvent Function adds an event to the database.
-func AddEvent(password string) {
+func AddEvent(password string, tempevent event) {
 	var psqlInfo = fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
@@ -89,11 +89,10 @@ func AddEvent(password string) {
 	if err != nil {
 		panic(err)
 	}
-	time := time.Now()
 	sqlStatement := `
 	INSERT INTO events (id, date, type_id, username, description, title, priority)
-	VALUES ($1, $2, (SELECT id FROM type WHERE id = 2), (SELECT username FROM users WHERE username='lazy'), $3, $4, $5)`
-	_, err = db.Exec(sqlStatement, "1", time, "I was born", "Birthday", "urgent")
+	VALUES ($1, $2, (SELECT id FROM type WHERE id = $3), (SELECT username FROM users WHERE username= $4), $5, $6, $7)`
+	_, err = db.Exec(sqlStatement, tempevent.ID, time.Now(), tempevent.Type, tempevent.UserName, tempevent.Description, tempevent.Title, tempevent.Priority)
 	if err != nil {
 		panic(err)
 	}
@@ -101,7 +100,7 @@ func AddEvent(password string) {
 }
 
 //RemoveEvent Function removes the event from the planner.
-func RemoveEvent(password string) {
+func RemoveEvent(password string, tempevent event) {
 	var psqlInfo = fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
@@ -112,7 +111,7 @@ func RemoveEvent(password string) {
 	sqlStatement := `
 	DELETE FROM events
 	WHERE id = $1;`
-	_, err = db.Exec(sqlStatement, "1")
+	_, err = db.Exec(sqlStatement, tempevent.ID)
 	if err != nil {
 		panic(err)
 	}

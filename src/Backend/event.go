@@ -5,19 +5,20 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 
 	"github.com/gorilla/mux"
 )
 
 type (
 	event struct {
-		ID          string `json:"ID"`
+		ID          int    `json:"ID"`
 		Date        string `json:"Date"`
 		Title       string `json:"Title"`
 		Description string `json:"Description"`
-		Type        string `json:"Type"`
+		Type        int    `json:"Type"`
 		Priority    string `json:"Priority"`
-		UsersName   string `json:"Usersname"`
+		UserName    string `json:"Username"`
 	}
 	allEvents []event
 )
@@ -31,6 +32,7 @@ func createEvent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.Unmarshal(reqBody, &newEvent)
+	AddEvent(password, newEvent)
 	events = append(events, newEvent)
 	w.WriteHeader(http.StatusCreated)
 
@@ -47,7 +49,7 @@ func getSingleEvent(w http.ResponseWriter, r *http.Request) {
 	eventID := mux.Vars(r)["id"]
 
 	for _, singleEvent := range events {
-		if singleEvent.ID == eventID {
+		if strconv.Itoa(singleEvent.ID) == eventID {
 			json.NewEncoder(w).Encode(singleEvent)
 		}
 	}
@@ -64,7 +66,7 @@ func updateEvent(w http.ResponseWriter, r *http.Request) {
 	}
 	json.Unmarshal(reqBody, &updatedEvent)
 	for i, singleEvent := range events {
-		if singleEvent.ID == eventID {
+		if strconv.Itoa(singleEvent.ID) == eventID {
 			singleEvent.Title = updatedEvent.Title
 			singleEvent.Description = updatedEvent.Description
 			singleEvent.Type = updatedEvent.Type
@@ -79,7 +81,8 @@ func updateEvent(w http.ResponseWriter, r *http.Request) {
 func deleteEvent(w http.ResponseWriter, r *http.Request) {
 	eventID := mux.Vars(r)["id"]
 	for i, singleEvent := range events {
-		if singleEvent.ID == eventID {
+		if strconv.Itoa(singleEvent.ID) == eventID {
+			RemoveEvent(password, singleEvent)
 			events = append(events[:i], events[i+1:]...)
 			fmt.Fprintf(w, "The event with id %v has been successfully removed", eventID)
 		}

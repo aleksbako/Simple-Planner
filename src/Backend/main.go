@@ -11,16 +11,7 @@ import (
 )
 
 //events slice assigning values.
-var events = allEvents{
-	{
-		ID:          "1",
-		Title:       "Introduction to golang",
-		Description: "test",
-		Type:        "test type",
-		Priority:    "urgent",
-		UsersName:   "Admin",
-	},
-}
+var events = allEvents{}
 
 //password for the database.
 var password string
