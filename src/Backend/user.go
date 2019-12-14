@@ -31,6 +31,7 @@ func addUser(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "please enter Username and Password")
 	}
 	json.Unmarshal(reqbody, &newUser)
+	insertUser(password,newUser)
 	userlist = append(userlist, newUser)
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(newUser)

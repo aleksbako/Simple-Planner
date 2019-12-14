@@ -138,7 +138,7 @@ WHERE id = $2`
 }
 
 //FetchEvent Information Funciton.
-func FetchEvent(password string, id int) event {
+func FetchEventByID(password string, id int) event {
 
 	var psqlInfo = fmt.Sprintf("host=%s port=%d user=%s "+
 		"password=%s dbname=%s sslmode=disable",
@@ -171,6 +171,55 @@ func FetchEvent(password string, id int) event {
 			Priority:    priority,
 			Type:        temptype,
 			Date:        date,
+			UserName:    username,
+		}
+		return temp
+
+	default:
+		panic(err)
+	}
+	db.Close()
+	return temp
+}
+
+//FetchEventsForUser all the events that have this property
+func FetchEventsForUser(password string, source string, info string) event {
+	var psqlInfo = fmt.Sprintf("host=%s port=%d user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		host, port, user, password, dbname)
+	db, err := sql.Open("postgres", psqlInfo)
+	if err != nil {
+		panic(err)
+	}
+
+	//just assume that the person doesn't search by ID.
+
+	sqlStatement := `SELECT * FROM events WHERE $1 =$2`
+
+	row := db.QueryRow(sqlStatement, source, info)
+
+	var desc string
+	var title string
+	var priority string
+	var tempid int
+	var temptype string
+	var tempdate string
+	var username string
+	temp := event{}
+
+	switch err := row.Scan(&tempid, &priority, &title, &desc, &username, &tempdate, &temptype); err {
+	case sql.ErrNoRows:
+		fmt.Println("No rows were returned!")
+
+	case nil:
+		fmt.Println(desc, title, priority, tempid, temptype, tempdate, username)
+		temp = event{
+			ID:          tempid,
+			Title:       title,
+			Description: desc,
+			Priority:    priority,
+			Type:        temptype,
+			Date:        tempdate,
 			UserName:    username,
 		}
 		return temp

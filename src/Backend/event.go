@@ -95,7 +95,7 @@ func deleteEvent(w http.ResponseWriter, r *http.Request) {
 	if check == true {
 		temp, err := strconv.Atoi(eventID)
 		if err == nil {
-			ev := FetchEvent(password, temp)
+			ev := FetchEventByID(password, temp)
 			//error because it doesn't return anything, fix by returning a event object
 			if ev.Title != "" {
 				RemoveEvent(password, temp)
